@@ -2,12 +2,11 @@
 from typing import List
 
 from ..base import BaseService
-from ..entities import Task
-from ..dao import TaskDAO
+from ...models.task import Task
 
 
-class ListTasksService(BaseService):
-    """Provides all tasks list"""
+class TaskListService(BaseService):
+    """Provides all tasks as a simple list"""
     def execute(self) -> List[Task]:
         """Executes `ListTasksService` service"""
-        return list(TaskDAO.fetch_all())
+        return list(Task.objects.all())

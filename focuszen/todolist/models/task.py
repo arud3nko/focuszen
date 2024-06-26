@@ -1,7 +1,7 @@
 """This module describes Task Django ORM model"""
 from __future__ import annotations
 
-from typing import Literal
+from typing import Literal, Optional, List
 
 from django.db import models
 
@@ -34,3 +34,12 @@ class Task(BaseModel):
     """Actual time field"""
     parent = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True)
     """Parent task field"""
+
+    @property
+    def is_root(self):
+        return False if self.parent else True
+
+    @property
+    def children(self) -> Optional[List[Task]]:
+        return Task.objects.filter(parent=self)
+
