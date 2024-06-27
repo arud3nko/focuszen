@@ -5,10 +5,11 @@ from typing import Literal, Any, TYPE_CHECKING
 from django.db import transaction
 
 from .base import BaseService
-from .exceptions import IncorrectCompletion
+from .exceptions import StatusNotAllowed
+from ..enums import Status
 
 if TYPE_CHECKING:
-    from ..models import Task, Status
+    from ..models import Task
 
 
 class TaskStatusUpdateService(BaseService):
@@ -36,19 +37,17 @@ class CompleteTaskService(BaseService):
                  task: Task):
         self._task = task
 
-    def execute(self) -> Any:
+    def execute(self) -> Any:  # FIXME this is business-logic and it should be independent from Django transactions
         """Executes `CompleteTaskService` service - checks completable & recursively completes subtasks"""
         if self.completable(self._task):
-            with transaction.atomic():
-                for child in self._task.children:
-                    self._complete(child)
+            self._complete(self._task)
         else:
-            raise IncorrectCompletion()
+            raise StatusNotAllowed("Task is not completable due to current status or subtasks statuses")
 
     @staticmethod
     def completable(task: Task) -> bool:
         """Check if task can be marked as completed"""
-        if task.status != Status.RUNNING:
+        if task.status not in [Status.RUNNING, Status.COMPLETED]:
             return False
         for child in task.children:
             if not CompleteTaskService.completable(child):
@@ -61,6 +60,10 @@ class CompleteTaskService(BaseService):
         task.status = Status.COMPLETED
         task.save()
 
+        with transaction.atomic():
+            for child in task.children:
+                CompleteTaskService._complete(child)
+
 
 class SuspendTaskService(BaseService):
     """This service can be used separately or inside the `TaskStatusUpdateService` to set `Task` status to suspended"""
@@ -71,7 +74,7 @@ class SuspendTaskService(BaseService):
     def execute(self) -> Any:
         """Executes `SuspendTaskService` service"""
         if not self.suspendable(self._task):
-            raise IncorrectCompletion()
+            raise StatusNotAllowed("Task cannot be suspended due to its current status")
 
     @staticmethod
     def suspendable(task: Task) -> bool:

@@ -1,3 +1,3 @@
 """This package provides Django ORM models"""
 
-from .task import Task, Status
+from .task import Task

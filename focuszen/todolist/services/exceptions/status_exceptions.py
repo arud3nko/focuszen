@@ -3,7 +3,10 @@
 from .base import ServiceException
 
 
-class IncorrectCompletion(ServiceException):
+class StatusNotAllowed(ServiceException):
     """Raised when trying to complete a task with uncompleted subtasks or incorrect current status"""
+    def __init__(self, msg: str):
+        self.msg = msg
+
     def __str__(self):
-        return "Current task status is incorrect or task has uncompleted subtasks"
+        return self.msg

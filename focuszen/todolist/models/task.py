@@ -6,14 +6,7 @@ from typing import Literal, Optional, List
 from django.db import models
 
 from .base import BaseModel
-
-
-class Status(models.TextChoices):
-    """Task status literals, same as enum"""
-    ASSIGNED:   str = "assigned"
-    RUNNING:    str = "running"
-    SUSPENDED:  str = "suspended"
-    COMPLETED:  str = "completed"
+from ..enums import Status
 
 
 class Task(BaseModel):
