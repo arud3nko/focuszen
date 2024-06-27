@@ -3,6 +3,7 @@
 from rest_framework import serializers
 
 from ..models import Task
+from ..services import CountSubTasksEffort
 
 
 class BaseTaskSerializer(serializers.ModelSerializer):
@@ -17,9 +18,9 @@ class BaseTaskSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_children_planned_effort(obj: Task):
         """Counts subtasks planned effort"""
-        return sum([child.planned_effort for child in obj.children])
+        return CountSubTasksEffort.count_planned_effort(obj=obj)
 
     @staticmethod
     def get_children_actual_effort(obj: Task):
         """Counts subtasks actual effort"""
-        return sum([child.actual_effort for child in obj.children if child.actual_effort])
+        return CountSubTasksEffort.count_actual_effort(obj=obj)
