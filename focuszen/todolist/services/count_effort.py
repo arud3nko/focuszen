@@ -1,6 +1,10 @@
 """This module provides helper-class `CountSubTasksEffort`"""
+from __future__ import annotations
 
-from ..models import Task
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ..models import Task
 
 
 class CountSubTasksEffort:
@@ -15,5 +19,3 @@ class CountSubTasksEffort:
     def count_actual_effort(obj: Task):
         """Counts subtasks actual effort"""
         return sum([child.actual_effort for child in obj.children if child.actual_effort])
-
-

@@ -1,10 +1,14 @@
-from typing import Literal, Any
+from __future__ import annotations
+
+from typing import Literal, Any, TYPE_CHECKING
 
 from django.db import transaction
 
 from .base import BaseService
 from .exceptions import IncorrectCompletion
-from ..models import Task, Status
+
+if TYPE_CHECKING:
+    from ..models import Task, Status
 
 
 class TaskStatusUpdateService(BaseService):

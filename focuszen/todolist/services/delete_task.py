@@ -1,8 +1,12 @@
-from typing import Any
+from __future__ import annotations
+
+from typing import Any, TYPE_CHECKING
 
 from .base import BaseService
 from .exceptions import SubtasksExists
-from ..models import Task
+
+if TYPE_CHECKING:
+    from ..models import Task
 
 
 class DeleteTaskService(BaseService):
