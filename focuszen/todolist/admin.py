@@ -1,9 +1,9 @@
 from django.contrib import admin
 
-from todolist.models import TaskORMModel
+from todolist.models import Task
 
 
 # Register your models here.
-@admin.register(TaskORMModel)
+@admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
     pass

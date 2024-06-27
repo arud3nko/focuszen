@@ -36,10 +36,11 @@ class Task(BaseModel):
     """Parent task field"""
 
     @property
-    def is_root(self):
+    def is_root(self) -> bool:
+        """If `Task`.parent is None, this `Task` is root"""
         return False if self.parent else True
 
     @property
     def children(self) -> Optional[List[Task]]:
+        """Returns `Task` sub-tasks"""
         return Task.objects.filter(parent=self)
-
