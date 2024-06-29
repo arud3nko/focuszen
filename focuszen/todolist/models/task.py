@@ -19,13 +19,13 @@ class Task(BaseModel):
                                                                                         default=Status.ASSIGNED)
     """Task's current status field, may be one of Status literals.
     I annotated the type here to avoid types conflict inside the DAO attributes."""
-    planned_effort = models.IntegerField()
+    planned_effort = models.PositiveIntegerField()
     """Planned time field"""
     performer = models.CharField(max_length=200)
     """Performer field"""
-    actual_effort = models.IntegerField(blank=True, null=True)
+    actual_effort = models.PositiveIntegerField(blank=True, null=True)
     """Actual time field"""
-    parent = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True)
+    parent = models.ForeignKey('self', on_delete=models.PROTECT, blank=True, null=True)
     """Parent task field"""
 
     @property
