@@ -42,6 +42,19 @@ def prepare_task_bakery() -> Tuple[Task, dict]:
     return _, task_to_json(_)
 
 
+@pytest.fixture
+def hierarchy() -> Task:
+    """Prepare hierarchy for testing"""
+    from model_bakery import baker
+    _1 = baker.make(Task)
+    _2 = baker.make(Task, parent=_1)
+    _3 = baker.make(Task, parent=_1)
+    _4 = baker.make(Task)
+    _5 = baker.make(Task, parent=_2)
+
+    return _1
+
+
 def task_to_json(task: Task) -> dict:
     """Provides expected JSON dict for testing API endpoints"""
     return {
