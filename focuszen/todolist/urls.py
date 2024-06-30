@@ -1,9 +1,18 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
 from . import views
 
+crud = DefaultRouter()
+crud.register(r'', views.TaskViewSet, basename="task")
+
+hierarchy = DefaultRouter()
+hierarchy.register(r'', views.TasksHierarchyViewSet, basename="tasks-hierarchy")
+hierarchy.register(r'', views.SingleTaskHierarchyViewSet, basename="task-hierarchy")
+
 app_name = "todolist"
+
 urlpatterns = [
-    path("create/", views.create_task, name="create_task"),
-    path("", views.get_tasks_hierarchy, name="task_list")
+    path("hierarchy/", include(hierarchy.urls)),
+    path("", include(crud.urls)),
 ]

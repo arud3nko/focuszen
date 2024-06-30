@@ -6,14 +6,7 @@ from typing import Literal, Optional, List
 from django.db import models
 
 from .base import BaseModel
-
-
-class Status(models.TextChoices):
-    """Task status literals, same as enum"""
-    ASSIGNED:   str = "assigned"
-    RUNNING:    str = "running"
-    SUSPENDED:  str = "suspended"
-    COMPLETED:  str = "completed"
+from ..enums import Status
 
 
 class Task(BaseModel):
@@ -26,20 +19,21 @@ class Task(BaseModel):
                                                                                         default=Status.ASSIGNED)
     """Task's current status field, may be one of Status literals.
     I annotated the type here to avoid types conflict inside the DAO attributes."""
-    planned_effort = models.IntegerField()
+    planned_effort = models.PositiveIntegerField()
     """Planned time field"""
     performer = models.CharField(max_length=200)
     """Performer field"""
-    actual_effort = models.IntegerField(blank=True, null=True)
+    actual_effort = models.PositiveIntegerField(blank=True, null=True)
     """Actual time field"""
-    parent = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True)
+    parent = models.ForeignKey('self', on_delete=models.PROTECT, blank=True, null=True)
     """Parent task field"""
 
     @property
-    def is_root(self):
+    def is_root(self) -> bool:
+        """If `Task`.parent is None, this `Task` is root"""
         return False if self.parent else True
 
     @property
     def children(self) -> Optional[List[Task]]:
+        """Returns `Task` sub-tasks"""
         return Task.objects.filter(parent=self)
-
