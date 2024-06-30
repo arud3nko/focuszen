@@ -1,6 +1,6 @@
 """This module provides `Task` model DRF serializer"""
 
-from rest_framework import serializers
+from rest_framework.exceptions import APIException
 
 from ..models import Task
 
@@ -21,7 +21,7 @@ class TaskSerializer(BaseTaskSerializer):
         parent = attrs.get('parent')
         if self.instance and parent:
             if parent.pk == self.instance.pk:
-                raise serializers.ValidationError("A task cannot be its own parent.")
+                raise APIException("A task cannot be its own parent.")
         if not self.instance and parent and parent.pk == attrs.get('id'):
-            raise serializers.ValidationError("A task cannot be its own parent.")
+            raise APIException("A task cannot be its own parent.")
         return attrs
