@@ -16,7 +16,12 @@ class TaskSerializer(BaseTaskSerializer):
         model = Task
         fields = "__all__"
 
-    def validate_parent(self, value):
-        if value and value == self.parent:
-            raise serializers.ValidationError("Parent task cannot be set to itself.")
-        return value
+    def validate(self, attrs):
+        """Check if parent is not self"""
+        parent = attrs.get('parent')
+        if self.instance and parent:
+            if parent.pk == self.instance.pk:
+                raise serializers.ValidationError("A task cannot be its own parent.")
+        if not self.instance and parent and parent.pk == attrs.get('id'):
+            raise serializers.ValidationError("A task cannot be its own parent.")
+        return attrs

@@ -26,6 +26,16 @@ class TestTaskSerializer:
         assert serializer.is_valid(raise_exception=True)
         assert serializer.errors == {}
 
+    def test_self_parent(self, make_task_bakery):
+        """Test if task cannot be its own parent"""
+        task, expected = make_task_bakery
+        expected["parent"] = task.pk
+
+        serializer = TaskSerializer(task, data=expected, partial=True)
+
+        assert not serializer.is_valid()
+        assert serializer.errors != {}
+
     @pytest.mark.parametrize("wrong_field", (
             {"status": "none"},
             {"planned_effort": -1},
