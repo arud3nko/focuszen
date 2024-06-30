@@ -1,5 +1,7 @@
 import pytest
 
+from rest_framework.exceptions import APIException
+
 from todolist.serializers import TaskSerializer
 from todolist.models import Task
 
@@ -30,11 +32,9 @@ class TestTaskSerializer:
         """Test if task cannot be its own parent"""
         task, expected = make_task_bakery
         expected["parent"] = task.pk
-
-        serializer = TaskSerializer(task, data=expected, partial=True)
-
-        assert not serializer.is_valid()
-        assert serializer.errors != {}
+        with pytest.raises(APIException):
+            _ = TaskSerializer(task, data=expected, partial=True)
+            _.is_valid()
 
     @pytest.mark.parametrize("wrong_field", (
             {"status": "none"},
