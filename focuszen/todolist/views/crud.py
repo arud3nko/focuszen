@@ -65,7 +65,7 @@ class CreateTaskMixin(mixins.CreateModelMixin):
 
     def perform_create(self, serializer):
         """Overriding perform_create to handle creation"""
-        serializer.validated_data.pop("status")  # FIXME this is костыль, provide proper status serialization
+        serializer.validated_data.pop("status", None)  # FIXME this is костыль, provide proper status serialization
         serializer.save()
     pass
 
