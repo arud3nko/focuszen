@@ -67,20 +67,33 @@
 
 ## Installation
 
-- Clone git repository
+- Клонируем Репозиторий
 ```bash
 git clone https://github.com/arud3nko/focuszen.git
 ```
-- Install dependencies into the venv
+- Устанавливаем зависимости в виртуальное окружение
 ```bash
 pip install -r requirements.txt
 ```
+- Настраиваем необходимые параметры (подключение, allowed_hosts, cors) не в .env, а в `focuszen/settings.py`
+- Делаем миграции
+```
+python manage.py makemigrations
+python manage.py makemigrations todolist
+python manage.py migrate
+```
+- Можно запускать dev-сервер
+```
+python manege.py runserver
+```
 
 ## Running tests
-- Run pytest
+- Запуск тестов
 ```bash
 pytest .\foocuszen\tests
 ```
+
+Нужно учесть, что pytest-django требует корректно настроенного подключения к БД. Он будет создавать тестовые таблицы, а после выполнения тестов удалять их.
 
 ## Authors
 
